@@ -12,6 +12,28 @@
       class="fa-solid fa-magnifying-glass text-xl hover:cursor-pointer"></i>
     </div>
   </main>
+  <div class="flex flex-col items-center text-gray w-full">
+    <div v-if="error">Something went wrong try again</div>
+    <div v-else-if="error && !weatherData?.length == null">Results not found</div>
+    <div v-else-if="weatherData?.data" class="bg-white py-10 px-20">
+      <h1 class="text-black" style="font-size: 40px;">
+        {{searchQuery}}
+      </h1>
+      <h2 style="font-size: 30px; color:gray; text-decoration: underline;">
+        Condition
+      </h2>
+      <div>
+          code: &nbsp;&nbsp;&nbsp; {{weatherData.data.current.condition.code}}
+      </div>
+      <div>
+           <img :src="weatherData.data.current.condition.icon" alt="" />
+      </div>
+      <div>
+          text: &nbsp;&nbsp;&nbsp; {{weatherData.data.current.condition.text}}
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -21,18 +43,23 @@ import axios from "axios";
 
 const searchQuery = ref("");
 const apiKey = '8d45abe6b0ab43fa830170303221608'
+const weatherData = ref(null);
+const error = ref(null);
 
 const getSearchResults = async()=>{
-  console.log(searchQuery.value)
+  try {
     if(searchQuery.value !== ""){
+      console.log(searchQuery.value)
       const result = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${searchQuery.value}&aqi=no`)
-      if(result?.data?.location){
-        console.log(result)
-      }
-      else{
-        alert("Location not found")
-      }
+      weatherData.value = result;
+      error.value = false;
+      console.log(weatherData.value.data.current)
     }
+    
+  } catch (er) {
+      console.log("error 123",weatherData)
+      error.value = true;
+  }
 }
 
 </script>
