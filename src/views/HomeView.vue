@@ -52,7 +52,7 @@ const getSearchResults = async()=>{
       const result = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${searchQuery.value}&aqi=no`)
       weatherData.value = result;
       error.value = false;
-      console.log(weatherData.value.data.current)
+      console.log(weatherData.value.data)
     }
     
   } catch (er) {
