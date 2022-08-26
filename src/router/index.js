@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import CityView from "../views/CityView.vue";
+import AllCitiesView from "../views/AllCitiesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: "/weather/:search",
       name: "cityView",
       component: CityView,
+    },
+    {
+      path: "/weather/all-cities",
+      name: "allCitiesView",
+      component: AllCitiesView,
     },
   ],
 });

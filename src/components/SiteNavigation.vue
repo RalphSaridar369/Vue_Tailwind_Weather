@@ -11,11 +11,14 @@
       <div class="flex gap-3 flex-1 justify-end">
         <i class="fa-solid fa-circle-info text-xl hover:text-weather-secondary duration-150 cursor-pointer"
           @click="toggleModal"></i>
-        <i class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"></i>
+        <i class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @click="addCity"></i>
+          <i class="fa-solid fa-calendar-check text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @click="goToAllCities">
+          </i>
       </div>
 
-      <BaseModal :modal-active="modalActive"
-      @close-modal="toggleModal">
+      <BaseModal :modal-active="modalActive" @close-modal="toggleModal">
         <div class="text-black">
           <h1 class="text-2xl mb-1">About:</h1>
           <p class="mb-4">
@@ -53,11 +56,43 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import BaseModal from "./BaseModal.vue";
+import { uid } from 'uid';
+import { useAppStore } from '../stores/appStore';
 
+const router = useRouter();
+const appStore = useAppStore()
 const modalActive = ref(null);
+const route = useRoute();
+
 const toggleModal = () => {
   modalActive.value = !modalActive.value;
 }
+
+const addCity = () => {
+
+  if (!appStore.currentLocation?.data?.current && appStore.locations.length <1) {
+    window.alert("Please search for a location before adding it");
+  }
+  else if (appStore.locations[0]?.data.location.name === appStore.search || appStore.locations[0]?.data.location.country === appStore.search) {
+    window.alert(`${appStore.currentLocation.data.location.name} was already added`)
+  }
+  else {
+    appStore.addLocation(appStore.currentLocation);
+    window.alert(`${appStore.currentLocation?.data?.location.name} was added successfully`);
+    appStore.changeCurrentLocation(null);
+  }
+}
+
+const goToAllCities =()=>{
+  if(appStore.locations.length<1){
+    window.alert("Please add atleast 1 location")
+    return
+  }
+  router.push({
+    name:'allCitiesView'
+  })
+}
+
 </script>

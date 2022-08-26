@@ -27,7 +27,7 @@
         <div class="max-v-screen-md w-full py-12">
             <div class="mx-8 text-white">
                 <h2 class="mb-4">Wind</h2>
-                <div class="flex gap-10 overflow-x-scroll">
+                <div class="flex gap-10 overflow-x-auto">
                     <div v-for="wind in windData" class="flex flex-col gap-4 items-center">
                         {{ wind.label }}: {{ wind.value }}  
                     </div>
@@ -45,10 +45,10 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const apiKey = '8d45abe6b0ab43fa830170303221608'
 const windData = [
-    {label:'wind_degree', value:''},
-    {label:'wind_dir', value:''},
-    {label:'wind_kph', value:''},
-    {label:'wind_mph', value:''}
+    {label:'wind degree', value:''},
+    {label:'wind dir', value:''},
+    {label:'wind kph', value:''},
+    {label:'wind mph', value:''}
 ]
 
 const getWeatherData = async () => {

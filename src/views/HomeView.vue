@@ -3,7 +3,8 @@
 <template>
   <main class="container text-white">
     <div class="pt-4 mb-8 relative flex flex-row content-center items-center">
-      <input v-model="searchQuery" type="text" placeholder="Search for city or state" class="py-2 px-1 w-full bg-transparent border-b focus:border-weather-secondary focus: outline-none
+      <input v-model.lazy="searchQuery" @keyup="searchInput($event.target.value)" type="text"
+        placeholder="Search for city or state" class="py-2 px-1 w-full bg-transparent border-b focus:border-weather-secondary focus: outline-none
       ">
       <i @click="getSearchResults" class="fa-solid fa-magnifying-glass text-xl hover:cursor-pointer"></i>
     </div>
@@ -33,17 +34,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 import { ref } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router'
+import { useAppStore } from '../stores/appStore'
 
+const appStore = useAppStore()
 const router = useRouter();
 const searchQuery = ref("");
 const apiKey = '8d45abe6b0ab43fa830170303221608'
 const weatherData = ref(null);
 const error = ref(null);
+
+const searchInput = (e) =>{
+  appStore.changeValues("search",e);
+}
+
 
 const getSearchResults = async()=>{
   try {
@@ -52,11 +60,11 @@ const getSearchResults = async()=>{
       const result = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${searchQuery.value}&aqi=no`)
       weatherData.value = result;
       error.value = false;
-      console.log(weatherData.value.data)
+      appStore.changeCurrentLocation(result);
     }
     
   } catch (er) {
-      console.log("error 123",weatherData)
+      console.log("error 123",er)
       error.value = true;
   }
 }
