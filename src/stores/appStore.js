@@ -27,6 +27,12 @@ export const useAppStore = defineStore({
         },
 
 
+        deleteLocationFromLocations(name){
+            this.$patch({
+                locations: this.$state.locations.filter((location)=>location.data.location.name != name),
+                ...this.state
+            })
+        },
 
         // clearCurrentLocation(){
         //     this.$reset({currentLocation:{},...this.state})
