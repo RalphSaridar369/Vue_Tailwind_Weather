@@ -2,7 +2,7 @@
 
 <script setup>
 
-import { ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router'
 import { useAppStore } from '../stores/appStore'
@@ -61,6 +61,31 @@ const previewDetails = (data) => {
   //   }
   // }
 }
+
+onMounted(() => {
+  console.log("Im in HomeView page, this is a console log inside onMounted function")
+});
+
+
+// a computed ref
+const exists = computed(() => {
+  return weatherData?.data ? 'Yes' : 'No'
+})
+
+// watch works directly on a ref
+// With Composition API, we can use the watch function to trigger a callback whenever a piece of reactive state changes:
+watch(error, async (newQuestion, oldQuestion) => {
+  if (newQuestion) {
+    error.value = 'Thinking...'
+    try {
+      // const res = await fetch('https://yesno.wtf/api')
+      error.value = ""
+    } catch (error) {
+      error.value = 'Error! Could not reach the API. '
+    }
+  }
+})
+
 
 </script>
 

@@ -28,7 +28,7 @@
             <div class="mx-8 text-white">
                 <h2 class="mb-4">Wind</h2>
                 <div class="flex gap-10 overflow-x-auto">
-                    <div v-for="wind in windData" class="flex flex-col gap-4 items-center">
+                    <div v-for="wind in windData" class="flex flex-col gap-4 items-center" :key="wind.label">
                         {{ wind.label }}: {{ wind.value }}  
                     </div>
                 </div>

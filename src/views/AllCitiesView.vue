@@ -4,7 +4,7 @@
         <div v-if="route?.params?.search?.length > 0" class="text-white p-4 bg-weather-secondary w-full text-center">
             <p>You are currently previewing the city, click the "+" icon start tracking the city</p>
         </div>
-        <div v-for="weatherData in appStore.locations">
+        <div v-for="weatherData in appStore.locations" :key="weatherData.data.current.name">
             <City :weatherData="weatherData"/>
         </div>
 

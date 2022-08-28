@@ -12,10 +12,10 @@
         <i class="fa-solid fa-circle-info text-xl hover:text-weather-secondary duration-150 cursor-pointer"
           @click="toggleModal"></i>
         <i class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
-          @click="addCity"></i>
-          <i class="fa-solid fa-calendar-check text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @[dynamicAction]="addCity"></i>
+        <i class="fa-solid fa-calendar-check text-xl hover:text-weather-secondary duration-150 cursor-pointer"
           @click="goToAllCities">
-          </i>
+        </i>
       </div>
 
       <BaseModal :modal-active="modalActive" @close-modal="toggleModal">
@@ -65,6 +65,7 @@ const router = useRouter();
 const appStore = useAppStore()
 const modalActive = ref(null);
 const route = useRoute();
+const dynamicAction = ref("click");
 
 const toggleModal = () => {
   modalActive.value = !modalActive.value;
@@ -72,7 +73,7 @@ const toggleModal = () => {
 
 const addCity = () => {
 
-  if (!appStore.currentLocation?.data?.current && appStore.locations.length <1) {
+  if (!appStore.currentLocation?.data?.current && appStore.locations.length < 1) {
     window.alert("Please search for a location before adding it");
   }
   else if (appStore.locations[0]?.data.location.name === appStore.search || appStore.locations[0]?.data.location.country === appStore.search) {
@@ -85,13 +86,13 @@ const addCity = () => {
   }
 }
 
-const goToAllCities =()=>{
-  if(appStore.locations.length<1){
+const goToAllCities = () => {
+  if (appStore.locations.length < 1) {
     window.alert("Please add atleast 1 location")
     return
   }
   router.push({
-    name:'allCitiesView'
+    name: 'allCitiesView'
   })
 }
 
