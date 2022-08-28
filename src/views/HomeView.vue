@@ -12,42 +12,54 @@ import CityCardSkeleton from "../components/CityCardSkeleton.vue";
 const appStore = useAppStore()
 const router = useRouter();
 const searchQuery = ref("");
+const loading = ref(false);
 const apiKey = '8d45abe6b0ab43fa830170303221608'
 const weatherData = ref(null);
 const error = ref(null);
 
-const searchInput = (e) =>{
-  appStore.changeValues("search",e);
+const searchInput = (e) => {
+  appStore.changeValues("search", e);
 }
 
 
-const getSearchResults = async()=>{
+const getSearchResults = async () => {
   try {
-    if(searchQuery.value !== ""){
+    if (searchQuery.value !== "") {
       console.log(searchQuery.value)
+      loading.value = true;
       const result = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${searchQuery.value}&aqi=no`)
       setTimeout(() => {
-      weatherData.value = result;
-      error.value = false;
-      appStore.changeCurrentLocation(result);
+        weatherData.value = result;
+        error.value = false;
+        appStore.changeCurrentLocation(result);
+        loading.value = true;
       }, 3000);
+      return result
     }
-    
+
   } catch (er) {
-      console.log("error 123",er)
-      error.value = true;
+    loading.value = false;
+    error.value = true;
   }
 }
 
-const previewDetails = (data) =>{
+const previewDetails = (data) => {
   console.log()
   router.push({
-    name:'cityView',
-    params:{search:searchQuery.value},
-    query:{
-      data:weatherData
+    name: 'cityView',
+    params: { search: searchQuery.value },
+    query: {
+      data: weatherData
     }
   })
+
+  // export default {
+  //   async setup() {
+  //     const data = await getSearchResults();
+
+  //     return data;
+  //   }
+  // }
 }
 
 </script>
@@ -62,34 +74,34 @@ const previewDetails = (data) =>{
     </div>
   </main>
   <div>
-    <Suspense>
-      <div class="flex flex-col items-center text-gray ">
-        <div v-if="error">Something went wrong try again</div>
-        <div v-else-if="error && !weatherData?.length == null">Results not found</div>
-        <div v-else-if="weatherData?.data" class="bg-white py-10 px-20 w-4/12 flex flex-col items-center justify-center
-        hover:cursor-pointer" style="border-radius:20px;" @click="previewDetails(weatherData)">
-          <h1 class="text-black" style="font-size: 40px;">
-            {{ searchQuery }}
-          </h1>
-          <h2 style="font-size: 24px; color:gray; text-decoration: underline;">
-            Condition
-          </h2>
-          <div>
-            code: &nbsp;&nbsp;&nbsp; {{ weatherData.data.current.condition.code }}
-          </div>
-          <div>
-            <img :src="weatherData.data.current.condition.icon" alt="" />
-          </div>
-          <div>
-            text: &nbsp;&nbsp;&nbsp; {{ weatherData.data.current.condition.text }}
-          </div>
+    <!-- <Suspense> -->
+    <div v-if="!weatherData?.data && loading" class="items-center justify-center flex">
+      <CityCardSkeleton />
+    </div>
+    <div class="flex flex-col items-center text-gray " v-else>
+      <div v-if="error">Something went wrong try again</div>
+      <div v-else-if="error && !weatherData?.length == null">Results not found</div>
+      <div v-else-if="weatherData?.data" class="bg-white py-10 px-20 w-4/12 flex flex-col items-center justify-center
+          hover:cursor-pointer" style="border-radius:20px;" @click="previewDetails(weatherData)">
+        <h1 class="text-black" style="font-size: 40px;">
+          {{ searchQuery }}
+        </h1>
+        <h2 style="font-size: 24px; color:gray; text-decoration: underline;">
+          Condition
+        </h2>
+        <div>
+          code: &nbsp;&nbsp;&nbsp; {{ weatherData.data.current.condition.code }}
+        </div>
+        <div>
+          <img :src="weatherData.data.current.condition.icon" alt="" />
+        </div>
+        <div>
+          text: &nbsp;&nbsp;&nbsp; {{ weatherData.data.current.condition.text }}
         </div>
       </div>
-      <template #fallback>
-        <div style="background-color:red!important; width:100vw!important">
-          <CityCardSkeleton />
-        </div>
-      </template>
-    </Suspense>
+    </div>
+    <!-- <template #fallback> -->
+    <!-- </template> -->
+    <!-- </Suspense> -->
   </div>
 </template>
